@@ -15,20 +15,20 @@ public class GameEngineTest {
 
     @Test
     public void testObjects() {
-        GameObject farmer = new Farmer();
+        GameObject farmer = new GameObject("Farmer","");
         Assert.assertEquals("Farmer", farmer.getName());
         Assert.assertEquals(Location.START, farmer.getLocation());
         Assert.assertEquals("", farmer.getSound());
         /* Check getters for wolf, goose, and beans */
-        GameObject wolf = new Wolf();
+        GameObject wolf = new GameObject("Wolf", "Howl");
         Assert.assertEquals("Wolf", wolf.getName());
         Assert.assertEquals(Location.START, wolf.getLocation());
         Assert.assertEquals("Howl", wolf.getSound());
-        GameObject goose = new Goose();
+        GameObject goose = new GameObject("Goose", "Honk");
         Assert.assertEquals("Goose", goose.getName());
         Assert.assertEquals(Location.START, goose.getLocation());
         Assert.assertEquals("Honk", goose.getSound());
-        GameObject beans = new Beans();
+        GameObject beans = new GameObject("Beans", "");
         Assert.assertEquals("Beans", beans.getName());
         Assert.assertEquals(Location.START, beans.getLocation());
         Assert.assertEquals("", beans.getSound());
@@ -40,7 +40,7 @@ public class GameEngineTest {
         Assert.assertEquals(Location.START, engine.getLocation(Item.MID));
 
         /*
-         * TODO Transport the goose to the other side, unload it, and check that it has
+         * Transport the goose to the other side, unload it, and check that it has
          * the appropriate location
          */
         engine.loadBoat(Item.MID);
