@@ -19,7 +19,19 @@ public class GameEngineTest {
         Assert.assertEquals("Farmer", farmer.getName());
         Assert.assertEquals(Location.START, farmer.getLocation());
         Assert.assertEquals("", farmer.getSound());
-        /* TODO Check getters for wolf, goose, and beans */
+        /* Check getters for wolf, goose, and beans */
+        GameObject wolf = new Wolf();
+        Assert.assertEquals("Wolf", wolf.getName());
+        Assert.assertEquals(Location.START, wolf.getLocation());
+        Assert.assertEquals("Howl", wolf.getSound());
+        GameObject goose = new Goose();
+        Assert.assertEquals("Goose", goose.getName());
+        Assert.assertEquals(Location.START, goose.getLocation());
+        Assert.assertEquals("Honk", goose.getSound());
+        GameObject beans = new Beans();
+        Assert.assertEquals("Beans", beans.getName());
+        Assert.assertEquals(Location.START, beans.getLocation());
+        Assert.assertEquals("", beans.getSound());
     }
 
     @Test
@@ -28,9 +40,14 @@ public class GameEngineTest {
         Assert.assertEquals(Location.START, engine.getLocation(Item.MID));
 
         /*
-         * TODO Transport he goose to the other side, unload it, and check that it has
+         * TODO Transport the goose to the other side, unload it, and check that it has
          * the appropriate location
          */
+        engine.loadBoat(Item.MID);
+        engine.loadBoat(Item.PLAYER);
+        engine.rowBoat();
+        engine.unloadBoat(Item.MID);
+        Assert.assertEquals(Location.FINISH, engine.getLocation(Item.MID));
     }
 
     @Test
@@ -52,10 +69,44 @@ public class GameEngineTest {
         Assert.assertFalse(engine.gameIsWon());
 
         /*
-         * TODO The steps above are the first two steps in a winning game, complete the
+         * The steps above are the first two steps in a winning game, complete the
          * steps and check that the game is won.
          */
+        // transport the wolf
+        // upload the wolf
+        // transport the goose
+        engine.loadBoat(Item.TOP);
+        engine.rowBoat();
+        engine.unloadBoat(Item.TOP);
+        engine.loadBoat(Item.MID);
+        Assert.assertFalse(engine.gameIsLost());
+        Assert.assertFalse(engine.gameIsWon());
 
+        // go back alone
+        engine.rowBoat();
+        Assert.assertFalse(engine.gameIsLost());
+        Assert.assertFalse(engine.gameIsWon());
+
+        // transport beans
+        engine.unloadBoat(Item.MID);
+        engine.loadBoat(Item.BOTTOM);
+        engine.rowBoat();
+        engine.unloadBoat(Item.BOTTOM);
+        Assert.assertFalse(engine.gameIsLost());
+        Assert.assertFalse(engine.gameIsWon());
+
+        // go back alone
+        engine.rowBoat();
+        Assert.assertFalse(engine.gameIsLost());
+        Assert.assertFalse(engine.gameIsWon());
+
+        // transport goose
+        engine.loadBoat(Item.MID);
+        engine.rowBoat();
+        engine.unloadBoat(Item.MID);
+        engine.unloadBoat(Item.PLAYER);
+        Assert.assertTrue(engine.gameIsWon());
+        Assert.assertFalse(engine.gameIsLost());
     }
 
     @Test
@@ -71,10 +122,25 @@ public class GameEngineTest {
         Assert.assertFalse(engine.gameIsWon());
 
         /*
-         * TODO Once you transport the goose, go back alone, pick up the wolf, transport
+         * Once you transport the goose, go back alone, pick up the wolf, transport
          * the wolf, then go back alone again. After you go back alone the second time,
          * check that the game is lost.
          */
+        engine.rowBoat();
+        Assert.assertFalse(engine.gameIsLost());
+        Assert.assertFalse(engine.gameIsWon());
+
+        // transport wolf
+        engine.loadBoat(Item.TOP);
+        engine.rowBoat();
+        engine.unloadBoat(Item.TOP);
+        Assert.assertFalse(engine.gameIsLost());
+        Assert.assertFalse(engine.gameIsWon());
+
+        // leave wolf and goose alone
+        engine.rowBoat();
+        Assert.assertTrue(engine.gameIsLost());
+        Assert.assertFalse(engine.gameIsWon());
     }
 
     @Test

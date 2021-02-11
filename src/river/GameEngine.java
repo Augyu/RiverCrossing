@@ -18,10 +18,10 @@ public class GameEngine {
 
     public GameEngine() {
         top = new Wolf();
+        currentLocation = Location.START;
         mid = new Goose();
         bottom = new Beans();
         player = new Farmer();
-        currentLocation = Location.START;
     }
 
     public String getName(Item id) {
