@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
+
 public class GameEngineTest {
 
     public static final Item FARMER = Item.ITEM_3;
@@ -25,21 +27,21 @@ public class GameEngineTest {
 
     @Test
     public void testObjectCallThroughs() {
-        Assert.assertEquals("Farmer", engine.getItemName(FARMER));
+        Assert.assertEquals("", engine.getItemLabel(FARMER));
         Assert.assertEquals(Location.START, engine.getItemLocation(FARMER));
-        Assert.assertEquals("", engine.getItemSound(FARMER));
+        Assert.assertEquals(Color.MAGENTA, engine.getItemColor(FARMER));
 
-        Assert.assertEquals("Wolf", engine.getItemName(WOLF));
+        Assert.assertEquals("W", engine.getItemLabel(WOLF));
         Assert.assertEquals(Location.START, engine.getItemLocation(WOLF));
-        Assert.assertEquals("Howl", engine.getItemSound(WOLF));
+        Assert.assertEquals(Color.CYAN, engine.getItemColor(WOLF));
 
-        Assert.assertEquals("Goose", engine.getItemName(GOOSE));
+        Assert.assertEquals("G", engine.getItemLabel(GOOSE));
         Assert.assertEquals(Location.START, engine.getItemLocation(GOOSE));
-        Assert.assertEquals("Honk", engine.getItemSound(GOOSE));
+        Assert.assertEquals(Color.CYAN, engine.getItemColor(GOOSE));
 
-        Assert.assertEquals("Beans", engine.getItemName(BEANS));
+        Assert.assertEquals("B", engine.getItemLabel(BEANS));
         Assert.assertEquals(Location.START, engine.getItemLocation(BEANS));
-        Assert.assertEquals("", engine.getItemSound(BEANS));
+        Assert.assertEquals(Color.CYAN, engine.getItemColor(BEANS));
     }
 
     @Test

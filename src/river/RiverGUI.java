@@ -4,13 +4,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.HashMap;
 
 /**
  * Graphical interface for the River application
- * 
+ *
  * @author Gregory Kulczycki
  */
 public class RiverGUI extends JPanel implements MouseListener {
+
+    class ItemRectangle {
+        Item item;
+        Rectangle left;
+        Rectangle right;
+        public ItemRectangle(Item item, Rectangle left, Rectangle right) {
+            this.item = item;
+            this.left = left;
+            this.right = right;
+        }
+    }
 
     // ==========================================================
     // Fields (hotspots)
@@ -40,6 +52,7 @@ public class RiverGUI extends JPanel implements MouseListener {
 
     private GameEngine engine; // Model
     private boolean restart = false;
+    private HashMap<Item, ItemRectangle> itemRectangleByItem;
 
     // ==========================================================
     // Constructor
@@ -49,6 +62,11 @@ public class RiverGUI extends JPanel implements MouseListener {
 
         engine = new GameEngine();
         addMouseListener(this);
+        itemRectangleByItem = new HashMap<>();
+        itemRectangleByItem.put(Item.ITEM_0, new ItemRectangle(Item.ITEM_0, leftBeansRect, rightBeansRect));
+        itemRectangleByItem.put(Item.ITEM_1, new ItemRectangle(Item.ITEM_1, leftGooseRect, rightGooseRect));
+        itemRectangleByItem.put(Item.ITEM_2, new ItemRectangle(Item.ITEM_2, leftWolfRect, rightWolfRect));
+        itemRectangleByItem.put(Item.ITEM_3, new ItemRectangle(Item.ITEM_3, leftFarmerRect, rightFarmerRect));
     }
 
     // ==========================================================
@@ -81,48 +99,18 @@ public class RiverGUI extends JPanel implements MouseListener {
     }
 
     public void paintObjectsOnLeft(Graphics g) {
-
-        if (engine.getItemLocation(Item.ITEM_3) == Location.START) {
-            g.setColor(Color.MAGENTA);
-            g.fillRect(80, 215, 50, 50);
-        }
-        if (engine.getItemLocation(Item.ITEM_2) == Location.START) {
-            g.setColor(Color.CYAN);
-            g.fillRect(20, 215, 50, 50);
-            paintStringInRectangle("W", 20, 215, 50, 50, g);
-        }
-        if (engine.getItemLocation(Item.ITEM_1) == Location.START) {
-            g.setColor(Color.CYAN);
-            g.fillRect(20, 275, 50, 50);
-            paintStringInRectangle("G", 20, 275, 50, 50, g);
-        }
-        if (engine.getItemLocation(Item.ITEM_0) == Location.START) {
-            g.setColor(Color.CYAN);
-            g.fillRect(80, 275, 50, 50);
-            paintStringInRectangle("B", 80, 275, 50, 50, g);
+        for (ItemRectangle i: itemRectangleByItem.values()){
+            if (engine.getItemLocation(i.item) == Location.START) {
+                paintStringInRectangle(g, engine.getItemColor(i.item), engine.getItemLabel(i.item), i.left);
+            }
         }
     }
 
     public void paintObjectsOnRight(Graphics g) {
-
-        if (engine.getItemLocation(Item.ITEM_3) == Location.FINISH) {
-            g.setColor(Color.MAGENTA);
-            g.fillRect(730, 215, 50, 50);
-        }
-        if (engine.getItemLocation(Item.ITEM_2) == Location.FINISH) {
-            g.setColor(Color.CYAN);
-            g.fillRect(670, 215, 50, 50);
-            paintStringInRectangle("W", 670, 215, 50, 50, g);
-        }
-        if (engine.getItemLocation(Item.ITEM_1) == Location.FINISH) {
-            g.setColor(Color.CYAN);
-            g.fillRect(670, 275, 50, 50);
-            paintStringInRectangle("G", 670, 275, 50, 50, g);
-        }
-        if (engine.getItemLocation(Item.ITEM_0) == Location.FINISH) {
-            g.setColor(Color.CYAN);
-            g.fillRect(730, 275, 50, 50);
-            paintStringInRectangle("B", 730, 275, 50, 50, g);
+        for (ItemRectangle i: itemRectangleByItem.values()){
+            if (engine.getItemLocation(i.item) == Location.FINISH) {
+                paintStringInRectangle(g, engine.getItemColor(i.item), engine.getItemLabel(i.item), i.right);
+            }
         }
     }
 
@@ -166,7 +154,7 @@ public class RiverGUI extends JPanel implements MouseListener {
             } else if (engine.getItemLocation(Item.ITEM_0) == Location.BOAT) {
                 g.setColor(Color.CYAN);
                 g.fillRect(610, 215, 50, 50);
-                paintStringInRectangle("B", 610, 215, 50, 50, g);
+                paintStringInRectangle(g, Color.CYAN, "B", new Rectangle(610, 215, 50, 50));
             }
         }
     }
@@ -178,6 +166,18 @@ public class RiverGUI extends JPanel implements MouseListener {
         FontMetrics fm = g.getFontMetrics();
         int strXCoord = x + width / 2 - fm.stringWidth(str) / 2;
         int strYCoord = y + height / 2 + fontSize / 2 - 4;
+        g.drawString(str, strXCoord, strYCoord);
+    }
+
+    public void paintStringInRectangle(Graphics g, Color color, String str, Rectangle rect) {
+        g.setColor(color);
+        g.fillRect(rect.x, rect.y, rect.width, rect.height);
+        g.setColor(Color.BLACK);
+        int fontSize = (rect.height >= 40) ? 36 : 18;
+        g.setFont(new Font("Verdana", Font.BOLD, fontSize));
+        FontMetrics fm = g.getFontMetrics();
+        int strXCoord = rect.x + rect.width / 2 - fm.stringWidth(str) / 2;
+        int strYCoord = rect.y + rect.height / 2 + fontSize / 2 - 4;
         g.drawString(str, strXCoord, strYCoord);
     }
 
@@ -194,17 +194,13 @@ public class RiverGUI extends JPanel implements MouseListener {
         g.setColor(Color.BLACK);
         paintBorder(restartButtonRect, 3, g);
         g.setColor(Color.PINK);
-        paintRectangle(restartButtonRect, g);
+        g.fillRect(restartButtonRect.x, restartButtonRect.y, restartButtonRect.width, restartButtonRect.height);
         paintStringInRectangle("Restart", restartButtonRect.x, restartButtonRect.y, restartButtonRect.width,
                 restartButtonRect.height, g);
     }
 
     public void paintBorder(Rectangle r, int thickness, Graphics g) {
         g.fillRect(r.x - thickness, r.y - thickness, r.width + (2 * thickness), r.height + (2 * thickness));
-    }
-
-    public void paintRectangle(Rectangle r, Graphics g) {
-        g.fillRect(r.x, r.y, r.width, r.height);
     }
 
     // ==========================================================

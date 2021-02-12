@@ -13,19 +13,14 @@ public class GameEngine {
     final private HashMap<Item, GameObject> gameObjectByItem;
     private int itemsOnBoat;
 
-//    private static final Item BEANS = Item.ITEM_0;
-//    private static final Item GOOSE = Item.ITEM_1;
-//    private static final Item WOLF = Item.ITEM_2;
-//    private static final Item FARMER = Item.ITEM_3;
-
     public GameEngine() {
         boatLocation = Location.START;
         itemsOnBoat = 0;
         gameObjectByItem = new HashMap<>();
-        GameObject wolf = new GameObject("Wolf", Color.CYAN);
-        GameObject goose = new GameObject("Goose", Color.CYAN);
-        GameObject beans = new GameObject("Beans", Color.CYAN);
-        GameObject farmer = new GameObject("Farmer", Color.MAGENTA);
+        GameObject wolf = new GameObject("W", Color.CYAN);
+        GameObject goose = new GameObject("G", Color.CYAN);
+        GameObject beans = new GameObject("B", Color.CYAN);
+        GameObject farmer = new GameObject("", Color.MAGENTA);
 
         gameObjectByItem.put(WOLF, wolf);
         gameObjectByItem.put(GOOSE, goose);
@@ -33,7 +28,7 @@ public class GameEngine {
         gameObjectByItem.put(FARMER, farmer);
     }
 
-    public String getItemName(Item id) {
+    public String getItemLabel(Item id) {
         return gameObjectByItem.get(id).name;
     }
 
@@ -41,7 +36,7 @@ public class GameEngine {
         return gameObjectByItem.get(id).getLocation();
     }
 
-    public Color getItemSound(Item id) {
+    public Color getItemColor(Item id) {
         return gameObjectByItem.get(id).getColor();
     }
 
@@ -105,5 +100,6 @@ public class GameEngine {
             object.setLocation(Location.START);
         }
         boatLocation = Location.START;
+        itemsOnBoat = 0;
     }
 }
