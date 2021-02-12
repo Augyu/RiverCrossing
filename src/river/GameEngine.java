@@ -35,7 +35,7 @@ public class GameEngine {
         return gameObjectByItem.get(id).getLocation();
     }
 
-    public String getSound(Item id) {
+    public String getItemSound(Item id) {
         return gameObjectByItem.get(id).getSound();
     }
 
