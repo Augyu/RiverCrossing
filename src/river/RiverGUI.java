@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Graphical interface for the River application
@@ -13,16 +13,6 @@ import java.util.HashMap;
  */
 public class RiverGUI extends JPanel implements MouseListener {
 
-    class ItemRectangle {
-        Item item;
-        Rectangle left;
-        Rectangle right;
-        public ItemRectangle(Item item, Rectangle left, Rectangle right) {
-            this.item = item;
-            this.left = left;
-            this.right = right;
-        }
-    }
 
     // ==========================================================
     // Fields (hotspots)
@@ -52,7 +42,28 @@ public class RiverGUI extends JPanel implements MouseListener {
 
     private GameEngine engine; // Model
     private boolean restart = false;
-    private HashMap<Item, ItemRectangle> itemRectangleByItem;
+    private java.util.List<Item> itemList;
+
+    int[] dx = {0, 60, 0, 60};
+    int[] dy = {0, 0, -60, -60};
+
+    private int leftBaseX = 20;
+    private int leftBaseY = 275;
+    private int leftBoatX = 140;
+    private int leftBoatY = 275;
+
+    private int rightBaseX = 670;
+    private int rightBaseY = 275;
+    private int rightBoatX = 550;
+    private int rightBoatY = 275;
+
+    private int rectHeight = 50;
+    private int rectWidth = 50;
+
+    private Item passenger1;
+    private Item passenger2;
+
+
 
     // ==========================================================
     // Constructor
@@ -62,11 +73,7 @@ public class RiverGUI extends JPanel implements MouseListener {
 
         engine = new GameEngine();
         addMouseListener(this);
-        itemRectangleByItem = new HashMap<>();
-        itemRectangleByItem.put(Item.ITEM_0, new ItemRectangle(Item.ITEM_0, leftBeansRect, rightBeansRect));
-        itemRectangleByItem.put(Item.ITEM_1, new ItemRectangle(Item.ITEM_1, leftGooseRect, rightGooseRect));
-        itemRectangleByItem.put(Item.ITEM_2, new ItemRectangle(Item.ITEM_2, leftWolfRect, rightWolfRect));
-        itemRectangleByItem.put(Item.ITEM_3, new ItemRectangle(Item.ITEM_3, leftFarmerRect, rightFarmerRect));
+        itemList = Arrays.asList(Item.values());
     }
 
     // ==========================================================
@@ -79,8 +86,7 @@ public class RiverGUI extends JPanel implements MouseListener {
         g.setColor(Color.GRAY);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        paintObjectsOnLeft(g);
-        paintObjectsOnRight(g);
+        paintItem(g);
         paintObjectsOnBoat(g);
         String message = "";
         if (engine.gameIsLost()) {
@@ -98,20 +104,23 @@ public class RiverGUI extends JPanel implements MouseListener {
 
     }
 
-    public void paintObjectsOnLeft(Graphics g) {
-        for (ItemRectangle i: itemRectangleByItem.values()){
-            if (engine.getItemLocation(i.item) == Location.START) {
-                paintStringInRectangle(g, engine.getItemColor(i.item), engine.getItemLabel(i.item), i.left);
-            }
+    public void paintItem(Graphics g) {
+        for (Item i: itemList) {
+            paintStringInRectangle(g, engine.getItemColor(i), engine.getItemLabel(i), getItemRectangle(i));
         }
+
     }
 
-    public void paintObjectsOnRight(Graphics g) {
-        for (ItemRectangle i: itemRectangleByItem.values()){
-            if (engine.getItemLocation(i.item) == Location.FINISH) {
-                paintStringInRectangle(g, engine.getItemColor(i.item), engine.getItemLabel(i.item), i.right);
-            }
+    public Rectangle getItemRectangle(Item item) {
+        Rectangle rect = new Rectangle();
+        int index = item.ordinal();
+        Location location = engine.getItemLocation(item);
+        if (location == Location.START) {
+            rect = new Rectangle(leftBaseX + dx[index], leftBaseY + dy[index], rectWidth, rectHeight);
+        } else if (location == Location.FINISH) {
+            rect = new Rectangle(rightBaseX + dx[index], rightBaseY + dy[index], rectWidth, rectHeight);
         }
+        return rect;
     }
 
     public void paintObjectsOnBoat(Graphics g) {
