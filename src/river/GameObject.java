@@ -8,16 +8,11 @@ public class GameObject {
     protected Location location;
     protected Color color;
 
-    public GameObject() {
-
-    }
-
     public GameObject(String label, Color color) {
         this.label = label;
         this.location = Location.START;
         this.color = color;
     }
-
 
     public String getLabel() {
         return label;

@@ -151,4 +151,17 @@ public class FarmerGameEngineTest {
         Assert.assertEquals(beansLocation, engine.getItemLocation(BEANS));
         Assert.assertEquals(farmerLocation, engine.getItemLocation(FARMER));
     }
+
+    @Test
+    public void testRestGame() {
+        transport(FARMER);
+        Assert.assertEquals(Location.FINISH, engine.getItemLocation(FARMER));
+
+        engine.resetGame();
+        Assert.assertEquals(Location.START, engine.getItemLocation(WOLF));
+        Assert.assertEquals(Location.START, engine.getItemLocation(GOOSE));
+        Assert.assertEquals(Location.START, engine.getItemLocation(BEANS));
+        Assert.assertEquals(Location.START, engine.getItemLocation(FARMER));
+        Assert.assertEquals(Location.START, engine.getBoatLocation());
+    }
 }
