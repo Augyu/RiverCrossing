@@ -3,27 +3,27 @@ package river;
 import java.awt.*;
 import java.util.HashMap;
 
-public class FarmerGameEngine implements GameEngine {
+public class RobotGameEngine implements GameEngine{
 
-    public static final Item WOLF = Item.ITEM_2;
-    public static final Item GOOSE = Item.ITEM_1;
-    public static final Item BEANS = Item.ITEM_0;
-    public static final Item FARMER = Item.ITEM_3;
+    public static final Item SMALLBOT_1 = Item.ITEM_0;
+    public static final Item SMALLBOT_2 = Item.ITEM_1;
+    public static final Item TALLBOT_1 = Item.ITEM_2;
+    public static final Item TALLBOT_2 = Item.ITEM_3;
     private Location boatLocation;
     final private HashMap<Item, GameObject> gameObjectByItem;
 
-    public FarmerGameEngine() {
+    public RobotGameEngine() {
         boatLocation = Location.START;
         gameObjectByItem = new HashMap<>();
-        GameObject wolf = new GameObject("W", Color.CYAN);
-        GameObject goose = new GameObject("G", Color.CYAN);
-        GameObject beans = new GameObject("B", Color.CYAN);
-        GameObject farmer = new GameObject("", Color.MAGENTA);
+        GameObject smallBot_1 = new GameObject("S1", Color.CYAN);
+        GameObject smallBot_2 = new GameObject("S2", Color.CYAN);
+        GameObject tallBot_1 = new GameObject("T1", Color.MAGENTA);
+        GameObject tallBot_2 = new GameObject("T2", Color.MAGENTA);
 
-        gameObjectByItem.put(WOLF, wolf);
-        gameObjectByItem.put(GOOSE, goose);
-        gameObjectByItem.put(BEANS, beans);
-        gameObjectByItem.put(FARMER, farmer);
+        gameObjectByItem.put(SMALLBOT_1, smallBot_1);
+        gameObjectByItem.put(SMALLBOT_2, smallBot_2);
+        gameObjectByItem.put(TALLBOT_1, tallBot_1);
+        gameObjectByItem.put(TALLBOT_2, tallBot_2);
     }
 
     @Override
@@ -49,8 +49,12 @@ public class FarmerGameEngine implements GameEngine {
     @Override
     public void loadBoat(Item id) {
         GameObject object = gameObjectByItem.get(id);
-        if (getNumOfItemOnBoat() < 2 && object.getLocation() == boatLocation) {
-            object.setLocation(Location.BOAT);
+        if (object.getLocation() == boatLocation) {
+            if ((id == Item.ITEM_2 || id == Item.ITEM_3) && getBoatCapacity() == 0) {
+                object.setLocation(Location.BOAT);
+            } else if ((id == Item.ITEM_0 || id == Item.ITEM_1) && getBoatCapacity() < 2){
+                object.setLocation(Location.BOAT);
+            }
         }
     }
 
@@ -65,7 +69,6 @@ public class FarmerGameEngine implements GameEngine {
     @Override
     public void rowBoat() {
         assert (boatLocation != Location.BOAT);
-        if (getItemLocation(FARMER) != Location.BOAT) return;
         if (boatLocation == Location.START) {
             boatLocation = Location.FINISH;
         } else {
@@ -85,19 +88,6 @@ public class FarmerGameEngine implements GameEngine {
 
     @Override
     public boolean gameIsLost() {
-        Location gooseLocation = gameObjectByItem.get(GOOSE).getLocation();
-        Location farmerLocation = gameObjectByItem.get(FARMER).getLocation();
-        Location wolfLocation = gameObjectByItem.get(WOLF).getLocation();
-        Location beansLocation = gameObjectByItem.get(BEANS).getLocation();
-
-        if (gooseLocation == Location.BOAT ||
-                gooseLocation == farmerLocation ||
-                gooseLocation == boatLocation) {
-            return false;
-        }
-        if (gooseLocation == wolfLocation || gooseLocation == beansLocation) {
-            return true;
-        }
         return false;
     }
 
@@ -109,13 +99,14 @@ public class FarmerGameEngine implements GameEngine {
         boatLocation = Location.START;
     }
 
-    private int getNumOfItemOnBoat() {
-        int numOfItem = 0;
+    private int getBoatCapacity() {
+        int capacity = 0;
         for (Item item: gameObjectByItem.keySet()) {
             if (getItemLocation(item) == Location.BOAT) {
-                numOfItem++;
+                if (item == Item.ITEM_0 || item == Item.ITEM_1) capacity++;
+                else capacity += 2;
             }
         }
-        return numOfItem;
+        return capacity;
     }
 }

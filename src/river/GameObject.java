@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class GameObject {
 
-    protected String name;
+    protected String label;
     protected Location location;
     protected Color color;
 
@@ -13,14 +13,14 @@ public class GameObject {
     }
 
     public GameObject(String label, Color color) {
-        this.name = label;
+        this.label = label;
         this.location = Location.START;
         this.color = color;
     }
 
 
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 
     public Location getLocation() {
